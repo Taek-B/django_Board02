@@ -27,14 +27,60 @@
         </tr>
         <tr>
             <th>파일</th>
-            <td colspan="3">{{ dto.filename}}</td>
+            <td colspan="3">{{ dto.filename}}
+                {% if dto.filesize > 0%}
+                ({{dto.filesize}}KB)
+                {% endif %}
+            </td>
         </tr>
     </table>
+    <button type="button" class="btn btn-outline-primary _update" data-url="/update_form/{{dto.id}}">수정</button>
+    <button type="button" class="btn btn-outline-danger _delete" data-url="/delete/{{dto.id}}">삭제</button>
 
-    <br />
-    <br />
-    <a href="/update_form/{{dto.id}}">수정</a>
-    <a href="/delete/{{dto.id}}">삭제</a>
+    <!-- comment insert -->
+    <div class="mt-3">
+        <form action="/comment_insert/" method="post">
+            <input type="hidden" name="id" value="{{dto.id}}" />
+            <div class="form-group">
+                <label for="content">Comment:</label>
+                <textarea class="form-control" rows="5" id="content" placeholder="Enter content"
+                    name="content"></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-success"
+                data-url="/update_form/{{dto.id}}">CommentWrite</button>
+        </form>
+    </div>
 
+    <!-- comment count -->
+    <div class="mt-3"> Comment({{dto.comment_set.count}}) </div>
+
+    <!-- comment list -->
+    {% if dto.comment_set.count > 0 %}
+    <div>
+        {% for comment in dto.comment_set.all %}
+        <div class="py-1 text-muted">
+            <span style="width: min-content">{{comment.content}}</span>
+            <span>// {{comment.writer}} // {{comment.post_date | date:'Y-m-d'}}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
+{% endblock %}
+
+<!-- script 영역 -->
+{% block script %}
+<script>
+    // 수정하기
+    $("._update").on('click', function () {
+        // alert('정말 수정할까요?')
+        location.href = $(this).data("url");
+    });
+
+    // 삭제하기
+    $("._delete").on('click', function () {
+        alert('삭제 완료')
+        location.href = $(this).data("url");
+    });
+</script>
 {% endblock %}

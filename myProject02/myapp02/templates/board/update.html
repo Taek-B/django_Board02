@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h2>Update</h2>
+    <form action="/update/" method="post" enctype="multipart/form-data">
+        <!-- 수정한 데이터를 보내주기 위해서 id값을 기준을 잡고 전달해야해서 hidden타입을 이용 -->
+        <input type="hidden" id="id" name="id" value="{{dto.id}}">
+        <div class="form-group">
+            <label for="writer">writer:</label>
+            <input type="text" class="form-control" id="writer" placeholder="Enter writer" name="writer"
+                value="{{dto.writer}}">
+        </div>
+        <div class="form-group">
+            <label for="title">title:</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter title" name="title"
+                value="{{dto.title}}">
+        </div>
+        <div class="form-group">
+            <label for="content">content:</label>
+            <textarea class="form-control" rows="5" id="content" placeholder="Enter content"
+                name="content">{{dto.content}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="file">file: </label>{{dto.filename}}
+            <input type="file" class="form-control" id="file" placeholder="Enter file" name="file">
+        </div>
+
+        <button type="submit" class="btn btn-primary">수정하기</button>
+    </form>
+</div>
+{% endblock %}

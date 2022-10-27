@@ -170,9 +170,12 @@ def list_page(request):
     page_obj = paginator.get_page(page)
     print('boardCount : ', boardCount)
 
+    rowNo = boardCount - (int(page)-1) * pageSize  # 페이지 시작점 13 / 13- 5 / 13-10
+
     context = {'page_list': page_obj,
                'page': page,
                'word': word,
+               'rowNo': rowNo,
                'boardCount': boardCount}
     return render(request, 'board/list_page.html', context)
 
@@ -183,3 +186,62 @@ def detail(request, board_id):
     dto.hit_up()
     dto.save()
     return render(request, 'board/detail.html', {'dto': dto})
+
+
+# update_form
+def update_form(request, board_id):
+    dto = Board.objects.get(id=board_id)
+    return render(request, 'board/update.html', {'dto': dto})
+
+
+# update
+@csrf_exempt
+def update(request):
+
+    # 파일을 업로드를 했었을 경우
+    id = request.POST['id']
+    dto = Board.objects.get(id=id)
+    fname = dto.filename
+    fsize = dto.filesize
+    hitcount = dto.hit
+
+    # 파일을 업로드를 안했을 경우 파일객체를 받아옴
+    if 'file' in request.FILES:
+        file = request.FILES['file']
+        fname = file.name
+        fsize = file.size
+
+        fp = open('%s%s' % (UPLOAD_DIR, fname), 'wb')
+        for chunk in file.chunks():
+            fp.write(chunk)
+        fp.close()
+
+    update_dto = Board(id,
+                       writer=request.POST['writer'],
+                       title=request.POST['title'],
+                       content=request.POST['content'],
+                       filename=fname,
+                       filesize=fsize,
+                       hit=hitcount
+                       )
+    update_dto.save()
+
+    return redirect('/list')
+
+
+# delete
+def delete(request, board_id):
+    dto = Board.objects.get(id=board_id)
+    dto.delete()
+    return redirect('/list')
+
+
+# comment_insert
+@csrf_exempt
+def comment_insert(request):
+    id = request.POST['id']
+    dto = Comment(board_id=id,
+                  writer='aa',
+                  content=request.POST['content'])
+    dto.save()
+    return redirect('/detail/'+id)

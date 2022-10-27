@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load board_filter %}
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-end mb-3">
@@ -27,7 +28,7 @@
             <!-- for문 시작(django) -->
             {% for board in page_list %}
             <tr>
-                <td>{{ board.id}}</td>
+                <td>{{ rowNo|sub:forloop.counter0}}</td>
                 <td>
                     <a href="/detail/{{board.id}}">{{ board.title }}</a>
                 </td>

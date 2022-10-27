@@ -28,4 +28,9 @@ urlpatterns = [
     path('download/', views.download),
     path("list_page/", views.list_page),
     path("detail/<int:board_id>", views.detail),
+    path("update_form/<int:board_id>", views.update_form),
+    path("update/", views.update),
+    path('delete/<int:board_id>', views.delete),
+    path('comment_insert/', views.comment_insert),
+
 ]
